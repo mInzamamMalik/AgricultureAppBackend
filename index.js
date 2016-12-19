@@ -1,19 +1,24 @@
 var express = require('express');
+var mongoose = require("mongoose");
+var path = require("path");
+var cors = require('cors');
 var app = express();
+
+var v1 = require("./versions/v1");
+
 
 app.set('port', (process.env.PORT || 5000));
 
-app.use(express.static(__dirname + '/public'));
+app.use( cors() );
 
-// views is directory for all template files
-app.set('views', __dirname + '/views');
-app.set('view engine', 'ejs');
+app.use("/v1", v1 );
 
-app.get('/', function(request, response) {
-  response.render('pages/index');
-});
+// views an html page
+var indexPath = path.resolve(__dirname,"public");
+app.use(express.static(indexPath));
 
-app.listen(app.get('port'), function() {
+
+app.listen(app.get('port'), function () {
   console.log('Node app is running on port', app.get('port'));
 });
 
