@@ -4,8 +4,7 @@ var url = require("url");
 
 //schemas methods
 var userModel = require("../../DBrepo/userModel");
-
-
+var zameenModel = require("../../DBrepo/zameenModel");
 
 var v1 = express.Router()
 
@@ -21,18 +20,148 @@ v1.post("/signup", function (req, res, next) {
     newUser.save(function (err, saved) {
         if (!err) {
             console.log("signup success: ", saved);
-            res.json({ signup: true });
+            res.json({ success: true });
         } else {
-            console.log("signup error: ", err);
+            if (err.code == 11000) {
+
+                console.log("signup error: email already exist ");
+                res.json({
+                    success: false,
+                    message: "email already exist",
+                    error: err
+                });
+
+            } else {
+                console.log("signup error: ", err);
+                res.json({
+                    success: false,
+                    message: "database operation fail due to unknown reason, check logs for detail",
+                    error: err
+                });
+            }
+        }
+    });
+});
+/////////////////signup request//////////////////////////////////////////////////////////////////////
+
+///////////////////////do login started/////////////////////////////////////////////////////////////////
+v1.post("/login", function (req, res, next) {
+
+    console.log("body: ", req.body);
+    var loginObject = req.body;
+
+    userModel.findOne(
+        {
+            email: loginObject.email,
+            password: loginObject.password
+        })
+        .select('-password')
+        .exec(function (err, user) {
+            if (!err) {
+                if (!user) {
+                    console.log("login error: no user found");
+                    res.json({
+                        success: false,
+                        message: "invalid email or password"
+                    });
+                } else {
+                    console.log("login success: ", user);
+                    res.json({
+                        success: true,
+                        data: user
+                    });
+                }
+            } else {
+                console.log("signup error: ", err);
+                res.json({
+                    success: false,
+                    message: "database operation fail due to unknown reason, check logs for detail",
+                    error: err
+                });
+            }
+        })
+});
+/////////////////login request end//////////////////////////////////////////////////////////////////////
+
+///////////////////////addZameen request started/////////////////////////////////////////////////////////////////
+v1.post("/addZameen", function (req, res, next) {
+
+    console.log("body: ", req.body);
+    var zameenObject = req.body;
+
+    var newZameen = new zameenModel(zameenObject);
+    newZameen.save(function (err, saved) {
+        if (!err) {
+            console.log("zameen added: ", saved);
             res.json({
-                signup: false,
-                message: "unknown database error check lohs for detail",
+                success: true,
+                data: saved
+            });
+        } else {
+            console.log("error: ", err);
+            res.json({
+                success: false,
+                message: "database operation fail due to unknown reason, check logs for detail",
                 error: err
             });
         }
     });
 });
-/////////////////signup request//////////////////////////////////////////////////////////////////////
+/////////////////addZameen request ended/////////////////////////////////////////////////////////////////////
+
+///////////////////////addZameen request started/////////////////////////////////////////////////////////////////
+v1.post("/addZameen", function (req, res, next) {
+
+    console.log("body: ", req.body);
+    var zameenObject = req.body;
+
+    var newZameen = new zameenModel(zameenObject);
+    newZameen.save(function (err, saved) {
+        if (!err) {
+            console.log("zameen added: ", saved);
+            res.json({
+                success: true,
+                data: saved
+            });
+        } else {
+            console.log("error: ", err);
+            res.json({
+                success: false,
+                message: "database operation fail due to unknown reason, check logs for detail",
+                error: err
+            });
+        }
+    });
+});
+/////////////////addZameen request ended/////////////////////////////////////////////////////////////////////
+
+
+///////////////////////addZameen request started/////////////////////////////////////////////////////////////////
+v1.post("/allZameen", function (req, res, next) {
+
+    console.log("body: ", req.body);
+    var landLord = req.body.landLord;
+
+    zameenModel.find({ landLord: landLord })
+        .exec(function (err, zameen) {
+            if (!err) {
+                console.log("all zameen: ", zameen);
+                res.json({
+                    success: true,
+                    data: zameen
+                });
+            } else {
+                console.log("error: ", err);
+                res.json({
+                    success: false,
+                    message: "database operation fail due to unknown reason, check logs for detail",
+                    error: err
+                });
+            }
+        });
+});
+/////////////////addZameen request ended/////////////////////////////////////////////////////////////////////
+
 
 
 module.exports = v1;
