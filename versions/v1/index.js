@@ -136,7 +136,7 @@ v1.post("/addZameen", function (req, res, next) {
 /////////////////addZameen request ended/////////////////////////////////////////////////////////////////////
 
 
-///////////////////////addZameen request started/////////////////////////////////////////////////////////////////
+///////////////////////allZameen request started/////////////////////////////////////////////////////////////////
 v1.post("/allZameen", function (req, res, next) {
 
     console.log("body: ", req.body);
@@ -160,7 +160,66 @@ v1.post("/allZameen", function (req, res, next) {
             }
         });
 });
-/////////////////addZameen request ended/////////////////////////////////////////////////////////////////////
+/////////////////allZameen request ended/////////////////////////////////////////////////////////////////////
+
+///////////////////////addBalance request started/////////////////////////////////////////////////////////////////
+v1.post("/addBalance", function (req, res, next) {
+
+    console.log("body: ", req.body);
+    var balance = req.body.balance;
+    var zameenId = req.body.zameenId;
+
+    if (isNaN(balance) || +balance < 0) {
+        console.log("balance should must be possitive number");
+        res.json({
+            success: false,
+            message: "balance should must be possitive number"
+        });
+        return;
+    }
+
+    zameenModel.findOne({ _id: zameenId })
+        .exec(function (err, zameen) {
+            if (!err) {
+                if (!zameen) {
+                    console.log("login error: no zameen found");
+                    res.json({
+                        success: false,
+                        message: "no zameen found for given id"
+                    });
+                } else {
+                    console.log("zameen found: ", zameen);
+
+                    zameen.accountBalance += balance;
+                    zameen.save(function (err, data) {
+                        if (!err) {
+                            res.json({
+                                success: true,
+                                message: "balance added",
+                                data: zameen
+                            });
+                        } else {
+                            console.log("error: ", err);
+                            res.json({
+                                success: false,
+                                message: "a database operation fail due to unknown reason, check logs for detail",
+                                error: err
+                            });
+                        }
+                    });
+                }
+            } else {
+                console.log("error: ", err);
+                res.json({
+                    success: false,
+                    message: "a database operation fail due to unknown reason, check logs for detail",
+                    error: err
+                });
+            }
+        })
+});
+/////////////////addBalance request ended/////////////////////////////////////////////////////////////////////
+
 
 
 
