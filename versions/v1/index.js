@@ -5,6 +5,7 @@ var url = require("url");
 //schemas methods
 var userModel = require("../../DBrepo/userModel");
 var zameenModel = require("../../DBrepo/zameenModel");
+var accountModel = require("../../DBrepo/accountmodel");
 
 var v1 = express.Router()
 
@@ -193,6 +194,7 @@ v1.post("/addBalance", function (req, res, next) {
                     zameen.accountBalance += balance;
                     zameen.save(function (err, data) {
                         if (!err) {
+                            accountEntry("Debit", balance)
                             res.json({
                                 success: true,
                                 message: "balance added",
@@ -224,3 +226,18 @@ v1.post("/addBalance", function (req, res, next) {
 
 
 module.exports = v1;
+
+function accountEntry(head, amount) {
+
+    var newEntry = new accountModel({
+        head: head,
+        amount: amount
+    });
+    newEntry.save(function (err, saved) {
+        if (!err) {
+            console.log("account entry added: ", saved);
+        } else {
+            console.log("account entry error: ", err);
+        }
+    });
+}
