@@ -25,8 +25,8 @@ app.listen(app.get('port'), function () {
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
-let dbURI = "mongodb://malikasinger:pakistan@ds133438.mlab.com:33438/agriculturedb";
-// let dbURI = 'mongodb://localhost/mydatabase';
+var dbURI = "mongodb://malikasinger:pakistan@ds133438.mlab.com:33438/agriculturedb";
+// var dbURI = 'mongodb://localhost/mydatabase';
 mongoose.connect(dbURI);
 
 
