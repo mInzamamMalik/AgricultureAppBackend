@@ -10,10 +10,12 @@
     "start": "node index.js"
   },
   "dependencies": {
+    "body-parser": "^1.15.2",
     "cors": "^2.8.1",
     "express": "^4.14.0",
     "mongoose": "^4.7.3",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "q": "^1.4.1"
   },
   "repository": {
     "type": "git",

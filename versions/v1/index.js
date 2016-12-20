@@ -4,15 +4,10 @@ var url = require("url");
 
 //schemas methods
 var userModel = require("../../DBrepo/userModel");
-var salesmanModel = require("../../DBrepo/salesmanModel");
-
-//salesman routes
-var salesmanRoutes = require("./salesmanRoutes");
-//admin routes
-var adminRoutes = require("./adminRoutes");
 
 
-let v1 = express.Router()
+
+var v1 = express.Router()
 
 v1.use(bodyParser.json());
 
@@ -26,7 +21,7 @@ v1.post("/signup", function (req, res, next) {
         lastName: string,
         companyName: string
     }
-    let signupObject = req.body;
+    var signupObject = req.body;
     console.log("data is : ", signupObject);
     doSignup(signupObject).then(function (success) {
         console.log("signup success: ", success);
@@ -38,7 +33,5 @@ v1.post("/signup", function (req, res, next) {
 });
 /////////////////signup request//////////////////////////////////////////////////////////////////////
 
-//turn app flow to salesman routes
-v1.use(salesmanRoutes);
 
 module.exports = v1;
