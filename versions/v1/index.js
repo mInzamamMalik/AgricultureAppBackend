@@ -5,7 +5,7 @@ var url = require("url");
 //schemas methods
 var userModel = require("../../DBrepo/userModel");
 var zameenModel = require("../../DBrepo/zameenModel");
-var accountModel = require("../../DBrepo/accountmodel");
+var accountModel = require("../../DBrepo/accountModel");
 
 var v1 = express.Router()
 
