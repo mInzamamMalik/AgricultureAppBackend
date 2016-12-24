@@ -6,6 +6,7 @@ var url = require("url");
 var userModel = require("../../DBrepo/userModel");
 var zameenModel = require("../../DBrepo/zameenModel");
 var accountModel = require("../../DBrepo/accountModel");
+var zameenEventModel = require("../../DBrepo/zameenEventModel");
 
 var v1 = express.Router()
 
@@ -221,6 +222,83 @@ v1.post("/addBalance", function (req, res, next) {
         })
 });
 /////////////////addBalance request ended/////////////////////////////////////////////////////////////////////
+
+///////////////////////addEvent request started/////////////////////////////////////////////////////////////////
+v1.post("/addEvent", function (req, res, next) {
+
+    console.log("body: ", req.body);
+
+    var newEventObject = {
+        zameenId: req.body.zameenId,
+        name: req.body.eventName,
+        cost: req.body.eventCost,
+        description: req.body.eventDescription,
+    }
+
+    if (isNaN(newEventObject.cost) || +newEventObject.cost < 0) {
+        console.log("cost should must be possitive number");
+        res.json({
+            success: false,
+            message: "balance should must be possitive number"
+        });
+        return;
+    }
+
+    zameenModel.findOne({ _id: newEventObject.zameenId })
+        .exec(function (err, zameen) {
+            if (!err) {
+                if (!zameen) {
+                    console.log("login error: no zameen found");
+                    res.json({
+                        success: false,
+                        message: "no zameen found for given id"
+                    });
+                } else {
+                    console.log("zameen found: ", zameen);
+
+                    if (zameen.accountBalance < newEventObject.cost) {
+                        console.log("account balance is too");
+                        res.json({
+                            success: false,
+                            message: "account balance is too"
+                        });
+                    } else {
+
+                        zameen.accountBalance -= newEventObject.cost;
+                        zameen.save();
+
+                        var newZameenEvent = new zameenEventModel(newEventObject);
+
+                        newZameenEvent.save(function (err, saved) {
+                            if (!err) {
+                                console.log("event added: ", saved);
+                                res.json({
+                                    success: true,
+                                    data: saved
+                                });
+                            } else {
+                                console.log("error: ", err);
+                                res.json({
+                                    success: false,
+                                    message: "database operation fail due to unknown reason, check logs for detail",
+                                    error: err
+                                });
+                            }
+                        });
+
+                    }
+                }
+            } else {
+                console.log("error: ", err);
+                res.json({
+                    success: false,
+                    message: "a database operation fail due to unknown reason, check logs for detail",
+                    error: err
+                });
+            }
+        })
+});
+/////////////////addEvent request ended/////////////////////////////////////////////////////////////////////
 
 
 
