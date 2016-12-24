@@ -195,9 +195,9 @@ v1.post("/addBalance", function (req, res, next) {
                 } else {
                     console.log("zameen found: ", zameen);
 
-                    zameen.accountBalance += balance;
+                    zameen.accountBalance += newEventObject.cost;
                     zameen.save();
-                    
+
                     var newZameenEvent = new zameenEventModel(newEventObject);
 
                     newZameenEvent.save(function (err, saved) {
