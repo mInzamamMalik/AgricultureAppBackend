@@ -2,10 +2,10 @@ var mongoose = require("mongoose"); //mongodb driver
 
 //////////////schema and model///////////////////////////////////////////
 var zameenEventSchema = new mongoose.Schema({
-    zameenId: { type: mongoose.Schema.Types.ObjectId, ref: "zameen" },
+    zameenId: { type: mongoose.Schema.Types.ObjectId, ref: "zameen", required: true },
     name: String,
     cost: Number,
-    description: String,
+    detail: String,
     createdOn: { type: Date, 'default': Date.now }, //pack 'default' in single quotes(this is Optional) to avoid compile error
 });
 

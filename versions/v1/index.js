@@ -232,7 +232,7 @@ v1.post("/addEvent", function (req, res, next) {
         zameenId: req.body.zameenId,
         name: req.body.eventName,
         cost: req.body.eventCost,
-        description: req.body.eventDescription,
+        detail: req.body.eventDetail,
     }
 
     if (isNaN(newEventObject.cost) || +newEventObject.cost < 0) {
