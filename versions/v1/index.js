@@ -167,6 +167,8 @@ v1.post("/allZameen", function (req, res, next) {
 ///////////////////////addBalance request started/////////////////////////////////////////////////////////////////
 v1.post("/addBalance", function (req, res, next) {
 
+
+    console.log("body: ", req.body);
     var newEventObject = {
         zameenId: req.body.zameenId,
         name: "Raqam jama ki gai",
