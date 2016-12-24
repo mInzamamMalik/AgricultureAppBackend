@@ -167,11 +167,14 @@ v1.post("/allZameen", function (req, res, next) {
 ///////////////////////addBalance request started/////////////////////////////////////////////////////////////////
 v1.post("/addBalance", function (req, res, next) {
 
-    console.log("body: ", req.body);
-    var balance = req.body.balance;
-    var zameenId = req.body.zameenId;
+    var newEventObject = {
+        zameenId: req.body.zameenId,
+        name: "Raqam jama ki gai",
+        cost: req.body.balance,
+        detail: "",
+    }
 
-    if (isNaN(balance) || +balance < 0) {
+    if (isNaN(newEventObject.cost) || +newEventObject.cost < 0) {
         console.log("balance should must be possitive number");
         res.json({
             success: false,
@@ -180,7 +183,7 @@ v1.post("/addBalance", function (req, res, next) {
         return;
     }
 
-    zameenModel.findOne({ _id: zameenId })
+    zameenModel.findOne({ _id: newEventObject.zameenId })
         .exec(function (err, zameen) {
             if (!err) {
                 if (!zameen) {
@@ -193,23 +196,27 @@ v1.post("/addBalance", function (req, res, next) {
                     console.log("zameen found: ", zameen);
 
                     zameen.accountBalance += balance;
-                    zameen.save(function (err, data) {
+                    zameen.save();
+                    
+                    var newZameenEvent = new zameenEventModel(newEventObject);
+
+                    newZameenEvent.save(function (err, saved) {
                         if (!err) {
-                            accountEntry("Debit", balance)
+                            console.log("event added: ", saved);
                             res.json({
                                 success: true,
-                                message: "balance added",
-                                data: zameen
+                                data: saved
                             });
                         } else {
                             console.log("error: ", err);
                             res.json({
                                 success: false,
-                                message: "a database operation fail due to unknown reason, check logs for detail",
+                                message: "database operation fail due to unknown reason, check logs for detail",
                                 error: err
                             });
                         }
                     });
+
                 }
             } else {
                 console.log("error: ", err);
