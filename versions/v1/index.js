@@ -239,7 +239,7 @@ v1.post("/addEvent", function (req, res, next) {
         console.log("cost should must be possitive number");
         res.json({
             success: false,
-            message: "balance should must be possitive number"
+            message: "cost should must be possitive number"
         });
         return;
     }
@@ -257,10 +257,10 @@ v1.post("/addEvent", function (req, res, next) {
                     console.log("zameen found: ", zameen);
 
                     if (zameen.accountBalance < newEventObject.cost) {
-                        console.log("account balance is too");
+                        console.log("Sorry account balance is too low");
                         res.json({
                             success: false,
-                            message: "account balance is too"
+                            message: "Sorry account balance is too low"
                         });
                     } else {
 
@@ -299,6 +299,32 @@ v1.post("/addEvent", function (req, res, next) {
         })
 });
 /////////////////addEvent request ended/////////////////////////////////////////////////////////////////////
+
+///////////////////////allEvents request started/////////////////////////////////////////////////////////////////
+v1.post("/allEvents", function (req, res, next) {
+
+    console.log("body: ", req.body);
+    var zameenId = req.body.zameenId;
+
+    zameenEventModel.find({ zameenId: zameenId })
+        .exec(function (err, events) {
+            if (!err) {
+                console.log("all zameen: ", events);
+                res.json({
+                    success: true,
+                    data: events
+                });
+            } else {
+                console.log("error: ", err);
+                res.json({
+                    success: false,
+                    message: "database operation fail due to unknown reason, check logs for detail",
+                    error: err
+                });
+            }
+        });
+});
+/////////////////allEvents request ended/////////////////////////////////////////////////////////////////////
 
 
 
